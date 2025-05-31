@@ -10,5 +10,5 @@ urlpatterns = [
     path('remote/', views.remote, name='remote'),
     path('saved_scripts/', views.saved_scripts, name='saved_scripts'),
     path('python_etl/', views.python_etl, name='python_etl'),
-    path('run_bat_file/', views.run_bat_file, name='run_bat_file'),
+    # path('run_bat_file/', views.run_bat_file, name='run_bat_file'), # Commented out as per request
 ]

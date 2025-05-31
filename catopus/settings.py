@@ -19,6 +19,9 @@ import environ
 env = environ.Env()
 environ.Env.read_env()
 
+REMOTE_DB_USER = env("RPL_USER")
+REMOTE_DB_PASSWORD = env("RPL_PASSWORD")
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 

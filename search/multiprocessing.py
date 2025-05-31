@@ -11,6 +11,7 @@ from psycopg2 import errors as psycopg2_errors
 from sqlalchemy import text
 from dotenv import load_dotenv
 from typing import Dict, List
+from django.conf import settings
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -32,8 +33,8 @@ def exec_sql_multiproc(info: Dict[str, str]):
         df = pd.read_sql_query(sql=text(get_query['code']),
                                con=create_db_sqlalchemy_engine(get_query['host'],
                                                                 get_query['db_name'],
-                                                                os.environ.get('RPL_USER'),
-                                                                os.environ.get('RPL_PASSWORD')))
+                                                                settings.REMOTE_DB_USER,
+                                                                settings.REMOTE_DB_PASSWORD))
 
         columns = list(df.columns)
         copy_df = df.copy()
@@ -93,10 +94,10 @@ def run_select(code: str, countries: List[str], customer_table_name : str=None) 
                     result_df.to_sql(
                         table_name,
                         con=create_db_sqlalchemy_engine(
-                            os.environ.get('DWH_HOST'),
-                            os.environ.get('DWH_DB'),
-                            os.environ.get('DWH_USER'),
-                            os.environ.get('DWH_PASSWORD')),
+                            settings.DATABASES['default']['HOST'],
+                            settings.DATABASES['default']['NAME'],
+                            settings.DATABASES['default']['USER'],
+                            settings.DATABASES['default']['PASSWORD']),
                         schema='catopus',
                         index=False,
                         chunksize=10000)
