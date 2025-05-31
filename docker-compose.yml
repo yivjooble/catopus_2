@@ -3,16 +3,25 @@ version: '3.8'
 services:
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    # command: python manage.py runserver 0.0.0.0:8000 # Command is now in Dockerfile
     volumes:
       - .:/app
       - static_volume:/app/static
     ports:
       - "8000:8000"
+    env_file: .env
     environment:
-      - DEBUG=1
-      - DATABASE_URL=postgres://postgres:postgres@db:5432/catopus
-      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=${SECRET_KEY}
+      - DEBUG=${DEBUG}
+      - DWH_HOST=db
+      - DWH_PORT=5432
+      - DWH_DB=${POSTGRES_DB}
+      - DWH_USER=${POSTGRES_USER}
+      - DWH_PASSWORD=${POSTGRES_PASSWORD}
+      - RPL_USER=${RPL_USER}
+      - RPL_PASSWORD=${RPL_PASSWORD}
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
     depends_on:
       - db
       - redis
@@ -21,10 +30,11 @@ services:
     image: postgres:14
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    env_file: .env # Source credentials from .env file
     environment:
-      - POSTGRES_DB=catopus
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 
   redis:
     image: redis:6
@@ -36,26 +46,46 @@ services:
     command: celery -A catopus worker -l INFO
     volumes:
       - .:/app
+    env_file: .env
     environment:
-      - DEBUG=1
-      - DATABASE_URL=postgres://postgres:postgres@db:5432/catopus
-      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=${SECRET_KEY}
+      - DEBUG=${DEBUG}
+      - DWH_HOST=db
+      - DWH_PORT=5432
+      - DWH_DB=${POSTGRES_DB}
+      - DWH_USER=${POSTGRES_USER}
+      - DWH_PASSWORD=${POSTGRES_PASSWORD}
+      - RPL_USER=${RPL_USER}
+      - RPL_PASSWORD=${RPL_PASSWORD}
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
     depends_on:
-      - web
+      - db # Added db
       - redis
+      - web # Keep web dependency for celery
 
   celery-beat:
     build: .
     command: celery -A catopus beat -l INFO
     volumes:
       - .:/app
+    env_file: .env
     environment:
-      - DEBUG=1
-      - DATABASE_URL=postgres://postgres:postgres@db:5432/catopus
-      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=${SECRET_KEY}
+      - DEBUG=${DEBUG}
+      - DWH_HOST=db
+      - DWH_PORT=5432
+      - DWH_DB=${POSTGRES_DB}
+      - DWH_USER=${POSTGRES_USER}
+      - DWH_PASSWORD=${POSTGRES_PASSWORD}
+      - RPL_USER=${RPL_USER}
+      - RPL_PASSWORD=${RPL_PASSWORD}
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
     depends_on:
-      - web
+      - db # Added db
       - redis
+      - web # Keep web dependency for celery-beat
 
 volumes:
   postgres_data:

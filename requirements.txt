@@ -1,6 +1,6 @@
 # python -m Django
 # use django-environ package to manage .env in Django
-psycopg2
+psycopg2-binary
 SQLAlchemy<2.0.0
 pandas
 django-environ
@@ -12,5 +12,5 @@ pyarrow
 fastparquet
 celery 
 redis
-whitenoises
+whitenoise
 gunicorn

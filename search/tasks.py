@@ -10,6 +10,7 @@ from multiprocessing import Queue, Manager
 
 from datetime import datetime
 from dotenv import load_dotenv
+from django.conf import settings
 
 # custom modules
 from .config import connection_info, map_country_code_to_id as code_to_id
@@ -29,8 +30,8 @@ def exec_sql_remote(query, results_list):
         df = pd.read_sql_query(sql=text(get_query['code']),
                                con=create_db_sqlalchemy_engine(get_query['host'],
                                                                 get_query['db_name'],
-                                                                os.environ.get('RPL_USER'),
-                                                                os.environ.get('RPL_PASSWORD')))
+                                                                settings.REMOTE_DB_USER,
+                                                                settings.REMOTE_DB_PASSWORD))
 
         columns = list(df.columns)
         copy_df = df.copy()
@@ -94,10 +95,10 @@ def run_sql_query_remotely(rmt_user, rmt_input_code, rmt_countries, rmt_countrie
             res_df.to_sql(
                 table_name,
                 con=create_db_sqlalchemy_engine(
-                    os.environ.get('DWH_HOST'),
-                    os.environ.get('DWH_DB'),
-                    os.environ.get('DWH_USER'),
-                    os.environ.get('DWH_PASSWORD')),
+                    settings.DATABASES['default']['HOST'],
+                    settings.DATABASES['default']['NAME'],
+                    settings.DATABASES['default']['USER'],
+                    settings.DATABASES['default']['PASSWORD']),
                 schema='catopus',
                 index=False,
                 chunksize=10000)
