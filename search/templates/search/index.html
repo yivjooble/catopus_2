@@ -1,0 +1,1304 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+    Catopus
+{% endblock %}
+
+{% block content %}
+  <!-- ======= Main Content ======= -->
+  
+    <div class="pagetitle">
+      <h1>Search</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'search:index' %}">Home</a></li>
+          <li class="breadcrumb-item active">Search page</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section dashboard">
+      <div class="row">
+        <div class="col-lg">
+    
+          <div class="card">
+            <div class="card-body">
+              <!-- <h5 class="card-title">Catopus search engine</h5> -->
+    
+              <!-- General Form Elements -->
+              <form method="post" id="query-form">
+                {% csrf_token %}
+
+
+                <!-- Extra Large Modal -->
+                <div class="container-buttons text-left" style="margin-top: 1.5rem;">
+                  <div class="row">
+                    <div class="col">
+                      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ExtralargeModal">
+                        Select countries
+                      </button>
+                      <!-- <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="modal" data-bs-target=""
+                        aria-expanded="false">
+                        My saved scripts
+                      </button> -->
+
+                      <!-- Options select -->
+                      <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        Options
+                      </button>
+                      <ul class="dropdown-menu" id="dropdown-menu">
+                        <!-- Dropdown menu items with checkboxes -->
+                        <li>
+                          <a class="dropdown-item" href="#">
+                            <div class="form-check form-switch">
+                              <input class="form-check-input" type="checkbox" id="shareResult">
+                              <label class="form-check-label" for="shareResult">Share results</label>
+                            </div>
+                          </a>
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#">
+                            <div class="form-check form-switch">
+                              <input class="form-check-input" type="checkbox" id="runRemotely">
+                              <label class="form-check-label" for="runRemotely">Run query remotely</label>
+                            </div>
+                          </a>
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#">
+                            <div class="form-check form-switch">
+                              <input class="form-check-input" type="checkbox" id="saveToDwh">
+                              <label class="form-check-label" for="saveToDwh" id="saveToDwhLabel">Save to dwh after execution</label>
+                            </div>
+                          </a>
+                        </li>
+                        <!-- <li>
+                          <a class="dropdown-item" href="#">
+                            <div class="form-check form-switch">
+                              <input class="form-check-input" type="checkbox" id="saveLocal">
+                              <label class="form-check-label" for="saveLocal">Save as</label>
+                            </div>
+                          </a>
+                        </li> -->
+                      </ul>
+
+                    </div>
+
+                    <!-- <div class="col col-sm-auto" style="display: block; padding-right: 0.5rem;" id="showSavedScripts">
+                      <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#savedScriptsModal">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-filetype-sql"
+                          viewBox="0 0 16 16">
+                          <path fill-rule="evenodd"
+                            d="M14 4.5V14a2 2 0 0 1-2 2v-1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5L14 4.5ZM0 14.841a1.129 1.129 0 0 0 .401.823c.13.108.288.192.478.252s.411.091.665.091c.338 0 .624-.053.858-.158.237-.106.416-.252.54-.44a1.17 1.17 0 0 0 .187-.656c0-.224-.045-.41-.135-.56a1 1 0 0 0-.375-.357 2.027 2.027 0 0 0-.565-.21l-.621-.144a.97.97 0 0 1-.405-.176.369.369 0 0 1-.143-.299c0-.156.061-.284.184-.384.125-.101.296-.152.513-.152.143 0 .266.022.37.068a.624.624 0 0 1 .245.181.56.56 0 0 1 .12.258h.75a1.092 1.092 0 0 0-.199-.566 1.21 1.21 0 0 0-.5-.41 1.813 1.813 0 0 0-.78-.152c-.293 0-.552.05-.776.15-.225.099-.4.24-.528.421-.127.182-.19.395-.19.639 0 .201.04.376.123.524.082.149.199.27.351.367.153.095.332.167.54.213l.618.144c.207.049.36.113.462.193a.387.387 0 0 1 .153.325c0 .11-.029.207-.085.29A.558.558 0 0 1 2 15.31c-.111.047-.249.07-.413.07-.117 0-.224-.013-.32-.04a.835.835 0 0 1-.248-.115.579.579 0 0 1-.255-.384H0Zm6.878 1.489-.507-.739c.176-.162.31-.362.401-.6.092-.239.138-.507.138-.806v-.501c0-.371-.07-.693-.208-.967a1.495 1.495 0 0 0-.589-.636c-.256-.15-.561-.225-.917-.225-.351 0-.656.075-.914.225-.256.149-.453.36-.592.636a2.138 2.138 0 0 0-.205.967v.5c0 .37.069.691.205.965.139.273.336.485.592.636a1.8 1.8 0 0 0 .914.222 1.8 1.8 0 0 0 .6-.1l.294.422h.788ZM4.262 14.2v-.522c0-.246.038-.456.114-.63a.91.91 0 0 1 .325-.398.885.885 0 0 1 .495-.138c.192 0 .357.046.495.138a.88.88 0 0 1 .325.398c.077.174.115.384.115.63v.522c0 .164-.018.312-.053.445-.035.13-.087.244-.155.34l-.106-.14-.105-.147h-.733l.451.65a.638.638 0 0 1-.251.047.872.872 0 0 1-.487-.147.916.916 0 0 1-.32-.404 1.67 1.67 0 0 1-.11-.644Zm3.986 1.057h1.696v.674H7.457v-3.999h.79v3.325Z">
+                          </path>
+                        </svg>
+                        <span class="visually-hidden">Button</span>
+                      </button>
+                    </div> -->
+
+                    <!-- Save to DWH button -->
+                    <div class="col col-sm-auto" style="display: block; padding-right: 1rem;" id="saveToDwhBlockSVG">
+                      <button type="button" class="btn btn-outline-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bookmark-plus"
+                          viewBox="0 0 16 16">
+                          <path
+                            d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5V2zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1H4z">
+                          </path>
+                          <path
+                            d="M8 4a.5.5 0 0 1 .5.5V6H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V7H6a.5.5 0 0 1 0-1h1.5V4.5A.5.5 0 0 1 8 4z">
+                          </path>
+                        </svg>
+                        <span class="visually-hidden">Button</span>
+                      </button>
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- Display db table name if provided -->
+                <div id="table-name-container" style="display: none; margin-top: 1rem;">
+                  <small id="table-name" style="color: orange;"></small>
+                </div>
+                <!-- /Display db table name if provided -->
+                
+
+                <!-- Show saved scripts -->
+                    <div class="modal fade" id="savedScriptsModal" tabindex="-1" data-bs-backdrop="false">
+                      <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title">Saved</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <!-- Body content -->
+                            <div class="row">
+                              <div class="col-sm">
+
+                                            <!-- df result -->
+
+
+                              </div>
+                            </div>
+                            <!-- /Body content -->
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                <!-- /Show saved scripts -->
+                
+                <!-- SELECT COUNTRIES -->
+                <div class="row mb-3">  
+                  <div class="col-sm">
+
+                    <div class="modal fade" id="ExtralargeModal" tabindex="-1">
+                      <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title">Select countries</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+    
+                            <div class="row mb-3">
+                              <div class="col-sm">
+                                <select class="form-select" id="selectpicker" aria-label="Default select example">
+                                  <option selected>Select countries list</option>
+                                  <option value="1">all countries</option>
+                                  <option value="2">Kaiju countries</option>
+                                  <option value="3">first priority countries</option>
+                                  <option value="4">second priority countries</option>
+                                  <option value="5">product test countries</option>
+                                </select>
+                              </div>
+                            </div>
+                            <!-- Countries list -->
+                            <div class="container">
+                              <div class="row">
+                                <div class="col-md">
+                                  <div class="control-group">
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="ua" value="ua"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="ua">1.[ua] Ukraine</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="de" value="de"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="de">2.[de] Germany</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="uk" value="uk"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="uk">3.[uk] United Kingdom</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="fr" value="fr"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="fr">4.[fr] France</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="ca" value="ca"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="ca">5.[ca] Canada</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="us" value="us"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="us">6.[us] USA</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="id" value="id"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="id">7.[id] Indonesia</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="pl" value="pl"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="pl">9.[pl] Poland</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="hu" value="hu"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="hu">10.[hu] Hungary</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="ro" value="ro"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="ro">11.[ro] Romania</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="es" value="es"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="es">12.[es] Spain</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="at" value="at"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="at">13.[at] Austria</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="be" value="be"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="be">14.[be] Belgium</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="br" value="br"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="br">15.[br] Brazil</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="ch" value="ch"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="ch">16.[ch] Switzerland</label>
+                                    </div>
+                                  </div>
+                                </div>
+    
+                                <div class="col-md">
+                                  <div class="control-group">
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="cz" value="cz"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="cz">17.[cz] Czech Republic</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="in" value="in"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="in">18.[in] India</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="it" value="it"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="it">19.[it] Italy</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="nl" value="nl"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="nl">20.[nl] Netherlands</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="tr" value="tr"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="tr">21.[tr] Turkey</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="cl" value="cl"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="cl">23.[cl] Chile</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="co" value="co"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="co">24.[co] Colombia</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="gr" value="gr"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="gr">25.[gr] Greece</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="sk" value="sk"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="sk">26.[sk] Slovakia</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="th" value="th"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="th">27.[th] Thailand</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="tw" value="tw"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="tw">28.[tw] Taiwan</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="ve" value="ve"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="ve">29.[ve] Venezuela</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="bg" value="bg"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="bg">30.[bg] Bulgaria</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="hr" value="hr"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="hr">31.[hr] Croatia</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="kz" value="kz"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="kz">32.[kz] Kazakhstan</label>
+                                    </div>
+                                  </div>
+                                </div>
+    
+    
+                                <div class="col-md">
+                                  <div class="control-group">
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="no" value="no"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="no">33.[no] Norway</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="rs" value="rs"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="rs">34.[rs] Serbia</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="se" value="se"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="se">35.[se] Sweden</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="nz" value="nz"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="nz">36.[nz] New Zealand</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="ng" value="ng"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="ng">37.[ng] Nigeria</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="ar" value="ar"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="ar">38.[ar] Argentina</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="mx" value="mx"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="mx">39.[mx] Mexico</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="pe" value="pe"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="pe">40.[pe] Peru</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="cn" value="cn"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="cn">41.[cn] China</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="hk" value="hk"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="hk">42.[hk] Hong Kong</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="kr" value="kr"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="kr">43.[kr] Republic of Korea</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="ph" value="ph"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="ph">44.[ph] Philippines</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="pk" value="pk"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="pk">45.[pk] Pakistan</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="jp" value="jp"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="jp">46.[jp] Japan</label>
+                                    </div>
+                                  </div>
+                                </div>
+    
+    
+    
+                                <div class="col-md">
+                                  <div class="control-group">
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="cu" value="cu"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="cu">47.[cu] Republic of Cuba</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="pr" value="pr"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="pr">48.[pr] Puerto Rico</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="sv" value="sv"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="sv">49.[sv] The Republic of El Salvador</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="cr" value="cr"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="cr">50.[cr] Costa Rica</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="au" value="au"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="au">51.[au] Australia</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="do" value="do"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="do">52.[do] Dominican Republic</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="uy" value="uy"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="uy">53.[uy] Uruguay</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="ec" value="ec"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="ec">54.[ec] Ecuador</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="sg" value="sg"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="sg">55.[sg] Singapore</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="az" value="az"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="az">56.[az] Azerbaijan</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="fi" value="fi"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="fi">57.[fi] Finland</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="ba" value="ba"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="ba">58.[ba] Bosnia and Herzegovina</label>
+                                    </div>
+                                  </div>
+                                </div>
+    
+    
+                                <div class="col-md">
+                                  <div class="control-group">
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="pt" value="pt"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="pt">59.[pt] Portugal</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="dk" value="dk"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="dk">60.[dk] Denmark</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="ie" value="ie"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="ie">61.[ie] Ireland</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="my" value="my"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="my">62.[my] Malaysia</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="za" value="za"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="za">63.[za] Republic of South Africa</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="ae" value="ae"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="ae">64.[ae] United Arab Emirates</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="qa" value="qa"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="qa">65.[qa] Qatar</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="sa" value="sa"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="sa">66.[sa] Saudi Arabia</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="kw" value="kw"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="kw">67.[kw] Kuwait</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="bh" value="bh"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="bh">68.[bh] Bahrain</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="eg" value="eg"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="eg">69.[eg] Egypt</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="ma" value="ma"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="ma">70.[ma] Morocco</label>
+                                    </div>
+                                    <div class="form-check ">
+                                      <input class="form-check-input" type="checkbox" id="uz" value="uz"
+                                        name="selected_countries_name">
+                                      <label class="form-check-label" for="uz">71.[uz] Uzbekistan</label>
+                                    </div>
+                                  </div>
+                                </div>
+    
+                              </div>
+                            </div>
+                            <!-- END Countries list -->
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-info" id="unSelectAll">Unselect all</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- SELECT COUNTRIES -->
+                
+                <!-- End Extra Large Modal-->
+    
+                <div class="row mb-3">
+                  <div class="col-sm">
+
+                    <textarea class="form-control" type="text" name="input_query_name" id="input_query_id" rows="11"
+                      placeholder="Enter your query"></textarea>
+
+                      <script type="text/javascript">
+                        var editor = CodeMirror.fromTextArea(document.getElementById("input_query_id"), {
+                          lineNumbers: true,
+                          mode: "text/x-pgsql",
+                          styleActiveLine: true,
+                          extraKeys: {"Ctrl-Space": "autocomplete"},
+                          className: "my-codemirror"
+                        });
+                        // Set the initial value of the CodeMirror editor with the input_query value from the context
+                        editor.setValue("{{ input_query|escapejs }}");
+                        editor.setSize("100%", "25rem"); //width, height
+
+                        const shareButtonSVG = document.getElementById("shareBlockSVG");
+
+                        editor.on("change", function () {
+                          if (editor.getValue().trim() !== "") {
+                            shareButtonSVG.style.display = "block";
+                          } else {
+                            shareButtonSVG.style.display = "none";
+                          }
+                        });
+
+                      </script>
+
+                  </div>
+                </div>
+    
+                <div class="row mb-3">
+                  
+                  <div class="container text-center">
+                    <div class="row justify-content-md-left">
+
+                      <div class="col-sm-auto">
+                        <button type="submit" class="btn btn-primary" id="startButton">Start</button>
+                      </div>
+
+                      <!-- STOP button -->
+                      <div class="col-sm-auto" id="stop-loader" style="display:none;">
+                        <button type="button" class="btn btn-danger">Cancel</button>
+                      </div>
+                      <!-- STOP button -->
+
+                    </div>
+                  </div>
+                  
+                </div>
+                <!-- Loading spinner -->
+                <div id="loader" class="text-center" style="display:none;">
+                  <div class="d-flex justify-content-center">
+                    <div>
+                      <strong>Fetching data...</strong>
+                    </div>
+                    <div class="spinner-border" style="width: 1.5rem; height: 1.5rem;" role="status">
+                    </div>
+                  </div>
+                </div>
+
+                <div id="saveToDbLoader" class="text-center" style="display:none;">
+                  <div class="d-flex justify-content-center">
+                    <div>
+                      <strong>Saving data...</strong>
+                    </div>
+                    <div class="spinner-border" style="width: 1.5rem; height: 1.5rem;" role="status">
+                    </div>
+                  </div>
+                </div>
+                <!-- Loading spinner -->
+              </form>
+              <!-- End General Form Elements -->
+            </div>
+
+          </div>
+
+
+          <!-- df result -->
+          <div class="card" id="result-container" style="display: none;">
+            <div class="card-body">
+              <div class="row mt-4">
+                <div class="table-responsive">
+                  <div id="results-table-container">
+                    <!-- The table will be replaced here -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>          
+          <!-- END df result -->
+
+        </div>
+      </div>
+    </section>
+
+
+
+
+
+
+
+
+    <style>
+      .container-buttons {
+        width: 100%;
+        padding-right: 0px;
+        padding-left: 0px;
+        margin-right: 0px;
+        margin-left: 0px;
+      }
+    </style>
+
+    
+    <script type="text/javascript">
+
+      // ============== Save sql to saved scripts ==============
+      $("#saveToDwhBlockSVG").click(function () {
+
+
+        var selectPicker = document.getElementById('selectpicker');
+        // Get selected countries list
+        var selectedListOfCountries = selectPicker.options[selectPicker.selectedIndex].text;
+
+        if (selectedListOfCountries == 'Select countries list') {
+          selectedListOfCountries = 'Custom selected countries';
+        }
+
+
+        // Get selected countries
+        var selected_countries = [];
+
+        all_countries.forEach(function (country_code) {
+          var country = document.getElementById(country_code);
+          if (country.checked) {
+            selected_countries.push(country_code);
+          }
+        });
+
+
+
+        // Get input query
+        var sql_query = editor.getValue();
+
+        console.log(sql_query)
+
+        if (sql_query.trim() !== '') {
+            $.ajax({
+                url: "saved_scripts/",
+                method: "POST",
+                data: {
+                  sql_query: sql_query,
+                  selected_countries: selected_countries.join(','), // Convert the array to a comma-separated string
+                  countries_list: selectedListOfCountries,
+                  csrfmiddlewaretoken: "{{ csrf_token }}"
+                }
+            });
+            Swal.fire({
+              position: 'top-end',
+              icon: 'success',
+              title: 'Script saved successfully',
+              showConfirmButton: false,
+              timer: 1500
+            });
+          } else {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Oops...',
+              text: 'Empty text field',
+            });
+          }
+        
+      });
+      
+
+
+      // ============== Stop page reload ==============
+      document.getElementById("dropdown-menu").addEventListener("click", function (event) {
+        event.stopPropagation();
+      });
+
+
+      // ============== Define behavior once page is loaded ==============
+      $(document).ready(function () {
+
+        // hide container created to show result df
+        $("#result-container").hide();
+        // Hide the stop-loader button initially
+        $("#stop-loader").hide(); 
+
+        // Check if a page is shared, is yes > there is an identifier and show a container to display shared data
+        var identifier = "{{ identifier }}";
+        var table = $("#result-container");
+
+        if (identifier) {
+          // show the table to display shared result
+          table.show();
+          // Update the table with the table_html from the context
+          var table_html = "{{ table_html|escapejs }}";
+          $("#results-table-container").html(table_html);
+        }
+
+
+        // ============== Page reload: clear address bar and uncheck share-result selected ==============
+        // Detect if the page is reloaded
+        if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
+          // Clear the table's content
+          $("#results-table-container").html("");
+          // Hide the table container
+          $("#result-container").hide();
+          // Replace the URL in the address bar with the base URL (without the result part)
+          window.history.replaceState(null, null, '/');
+
+          // Check if result was shared: clear address bar and uncheck share option
+          var isShareResultChecked = document.getElementById('shareResult');
+
+          if (isShareResultChecked.checked){
+            isShareResultChecked.checked = false;
+          }
+        }
+
+      });
+
+      // ============== Toggle countries checkbox if page is shared ==============
+      // Share results block start
+      function checkSelectedCountries() {
+        // Share results block: get selected coutries from view as json and "click it"
+        var selectedCountries = JSON.parse('{{ selected_countries|escapejs }}'); // Convert the selected_countries string to a JavaScript array
+        if (selectedCountries) {
+          // Loop through the selectedCountries array
+          selectedCountries.forEach(function (countryCode) {
+            // Get the checkbox element using the countryCode
+            var checkbox = document.getElementById(countryCode);
+
+            // Check the checkbox if the element exists
+            if (checkbox) {
+                checkbox.checked = true;}
+            });
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", function() {
+        // Get the current URL path
+        var urlPath = window.location.pathname;
+
+        // Define a regular expression to match a UUID in the URL path
+        var uuidPattern = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;
+
+        if (uuidPattern.test(urlPath)) {
+          checkSelectedCountries();
+        }
+      });
+      // Share results block end
+
+
+      // ============== Select countries functionality ==============
+      // if click on button id="unSelectAll"
+      $("#unSelectAll").click(function () {
+        unSelectAll();
+        // select "Select countries list" for id="selectpicker"
+        var e = document.getElementById("selectpicker");
+        e.selectedIndex = 0;
+        // select "Select countries list" for id="selectpicker"
+      });
+
+      function unSelectAll() {
+        all_countries = ["ua", "de", "uk", "fr", "ca", "us", "id", "pl", "hu", "ro", "es", "at", "be", "br", "ch", "cz",
+          "in", "it", "nl", "tr", "cl", "co", "gr", "sk", "th", "tw", "ve", "bg", "hr", "kz", "no", "rs",
+          "se", "nz", "ng", "ar", "mx", "pe", "cn", "hk", "kr", "ph", "pk", "jp", "cu", "pr", "sv", "cr",
+          "au", "do", "uy", "ec", "sg", "az", "fi", "ba", "pt", "dk", "ie", "my", "za", "ae", "qa", "sa",
+          "kw", "bh", "eg", "ma", "uz"]
+        for (var i = 0; i < all_countries.length; i++) {
+          country = document.getElementById(all_countries[i]);
+          if (country.checked) {
+            country.checked = false
+          }
+        }
+      }
+
+      var e = document.getElementById("selectpicker");
+      function onChange() {
+        var text = e.options[e.selectedIndex].text;
+        if (text == 'all countries') {
+          unSelectAll()
+          all_countries = ["ua", "de", "uk", "fr", "ca", "us", "id", "pl", "hu", "ro", "es", "at", "be", "br", "ch", "cz",
+            "in", "it", "nl", "tr", "cl", "co", "gr", "sk", "th", "tw", "ve", "bg", "hr", "kz", "no", "rs",
+            "se", "nz", "ng", "ar", "mx", "pe", "cn", "hk", "kr", "ph", "pk", "jp", "cu", "pr", "sv", "cr",
+            "au", "do", "uy", "ec", "sg", "az", "fi", "ba", "pt", "dk", "ie", "my", "za", "ae", "qa", "sa",
+            "kw", "bh", "eg", "ma", "uz"]
+          for (var i = 0; i < all_countries.length; i++) {
+            country = document.getElementById(all_countries[i]);
+            country.click();
+          }
+        } else if (text == 'Kaiju countries') {
+          unSelectAll()
+          var ids = ["at", "uk", "de", "fr", "ca", "us", "ch", "ro"]
+          for (var i = 0; i < ids.length; i++) {
+            country = document.getElementById(ids[i]);
+            country.click();
+          }
+        } else if (text == 'first priority countries') {
+          unSelectAll()
+          var ids = ["us", "de", "ca", "uk", "fr", "pl", "nl", "it", "at", "ch", "es", "se", "be", "cz", "hu", "br"]
+          for (var i = 0; i < ids.length; i++) {
+            country = document.getElementById(ids[i]);
+            country.click();
+          }
+        } else if (text == 'second priority countries') {
+          unSelectAll()
+          var ids = ["mx", "ua", "ro", "kz", "tr", "in", "co", "cl", "sk", "dk", "id", "gr", "hk", "pt", "sg"]
+          for (var i = 0; i < ids.length; i++) {
+            country = document.getElementById(ids[i]);
+            country.click();
+          }
+        } else if (text == 'product test countries') {
+          unSelectAll()
+          var ids = ["at", "be", "ca", "ch", "de", "fr", "nl", "pl", "ro", "uk", "us"]
+          for (var i = 0; i < ids.length; i++) {
+            country = document.getElementById(ids[i]);
+            country.click();
+          }
+        } else if (text == 'Select countries list') {
+          unSelectAll()
+        }
+      }
+      e.onchange = onChange;
+      onChange();
+
+
+      // ============== STOP button ==============
+      // define a button to stop an AJAX request and hide all not needed data
+      $("#stop-loader").click(function() {
+          if (xhr) {
+            userStoppedRequest = true; // Set the flag when the user stops the request
+            xhr.abort(); // Abort the ongoing AJAX request
+
+            // Hide the loader and stop button
+            $("#result-container").hide();
+            $("#loader").hide();
+            $("#stop-loader").hide();
+
+            // activate all buttons
+            $("#shareResult, #runRemotely, #saveToDwh").each(function() {
+              $(this).prop("disabled", false);
+            });
+            // activate all buttons
+
+            // Show a message that the request was stopped
+            Swal.fire(
+              'Stopped',
+              'The request has been stopped.',
+              'warning'
+            );
+          }
+        });
+
+
+      // ============== Check if there is a data for share result ==============
+      // Add an event listener for the checkbox "Share results"
+      $("#shareResult").on("change", function() {
+        var isShareResultChecked = document.getElementById('shareResult');
+
+        // Check if there is a result dataframe on a page or not
+        var resultsTableContainer = document.getElementById('results-table-container');
+        var isResultsEmpty = resultsTableContainer.children.length === 0;
+
+        // Update the URL in the address bar with the identifier
+        if (!xhr && isShareResultChecked.checked && isResultsEmpty) {
+          window.history.replaceState(null, null, '/');
+          Swal.fire({
+            position: 'top-end',
+            icon: 'info',
+            title: 'There is nothing to share',
+            showConfirmButton: false,
+            timer: 1500
+          });
+          isShareResultChecked.checked = false;
+        }
+      });
+
+
+      // ============== Remote: change start button text ==============
+      document.addEventListener('DOMContentLoaded', function () {
+        var isRemoteRun = document.getElementById('runRemotely');
+        var submitButton = document.getElementById('startButton');
+
+        isRemoteRun.addEventListener('change', function () {
+          if (isRemoteRun.checked) {
+            submitButton.textContent = 'Start remotely';
+          } else {
+            submitButton.textContent = 'Start';
+          }
+        });
+      });
+
+
+      // ============== Save to dwh: after execution ==============
+      document.addEventListener('DOMContentLoaded', function () {
+        var isSaveToDwhAfterExec = document.getElementById('saveToDwhLabel');
+
+        if(xhr) {
+          isSaveToDwhAfterExec.textContent = 'save result to dwh';
+        }
+      });
+
+
+
+      // ============== AJAX request to save to DWH (POST FACTUM) ==============
+      // make default variables to pass to an ajax request
+      // Initialise the customer table name for database
+      var userTableName = "";
+
+      $("#saveToDwh").on("change", async function() {
+        var isSaveToDwh = $(this).is(":checked");
+
+        if (isSaveToDwh) {
+          const { value: text, isConfirmed } = await Swal.fire({
+            title: 'Enter table name',
+            input: 'text',
+            inputLabel: 'This table gonna be created in dwh',
+            inputPlaceholder: 'dwh table name',
+            showCancelButton: true
+          });
+
+          if (isConfirmed && text) {
+            // Strip spaces and special characters using regular expressions
+            const sanitizedText = text.toLowerCase().replace(/[^a-zA-Z0-9_]/g, "");
+
+            Swal.fire(`catopus.${sanitizedText}`);
+            userTableName = sanitizedText;
+
+            if (xhr) {
+              $("#saveToDbLoader").show(); // Show the loader
+
+              // Send the AJAX request to save the table
+              $.ajax({
+                url: "", // Update with the appropriate URL
+                method: "POST",
+                data: {
+                  action: "save_table",
+                  table_name: sanitizedText,
+                  csrfmiddlewaretoken: "{{ csrf_token }}",
+                },
+                success: function (data) {
+                  $("#saveToDbLoader").hide(); // Hide the loader
+
+                  if (data.post_factum_table) {
+                    $("#table-name").text("Saved as: catopus."+data.post_factum_table);
+                    $("#table-name-container").show();
+                    $(this).prop("checked", false);
+                  } else {
+                    Swal.fire("Error", "Unable to save the table.", "error");
+                  }
+
+                  $("#saveToDwh").prop("checked", false); // Uncheck the checkbox
+                },
+                error: function () {
+                  $("#saveToDbLoader").hide(); // Hide the loader
+                  Swal.fire("Error", "Unable to save the table.", "error");
+                  $("#saveToDwh").prop("checked", false); // Uncheck the checkbox
+                },
+              });
+            }
+          } else {
+            // Toggle the 'saveToDwh' checkbox when the cancel button is clicked
+            $(this).prop("checked", false);
+          }
+        } else if (!isSaveToDwh) {
+          userTableName = "";
+        }
+      });
+
+
+
+      // ============== Only one checkbox can be selected at a time ==============
+      $("#shareResult, #runRemotely, #saveToDwh, #saveLocal").on("change", function() {
+        if ($(this).is(":checked")) {
+          var currentCheckboxId = $(this).attr("id");
+          $("#shareResult, #runRemotely, #saveToDwh, #saveLocal").each(function() {
+            if ($(this).attr("id") !== currentCheckboxId) {
+              $(this).prop("checked", false);
+              var submitButton = document.getElementById('startButton');
+              submitButton.textContent = 'Start';
+            }
+          });
+        }
+      });
+
+
+
+      // ============== Submit query form ==============
+      // define variable to ajax request
+      var xhr;
+      // Initialize the stop request flag
+      var userStoppedRequest = false;
+      $("#query-form").submit(function (event) {
+        event.preventDefault();
+
+        // Define a variable to store select query
+        var sql_query = $("#input_query_id").val();
+
+        // Get selected countries
+        var selected_countries = [];
+
+        all_countries.forEach(function (country_code) {
+          var country = document.getElementById(country_code);
+          if (country.checked) {
+            selected_countries.push(country_code);
+          }
+        });
+
+        // Define variables to prepate remote run
+        var isRemoteRun = document.getElementById('runRemotely');
+        var selectPicker = document.getElementById('selectpicker');
+        var selectedListOfCountries = selectPicker.options[selectPicker.selectedIndex].text;
+
+        if (selectedListOfCountries == 'Select countries list') {
+          selectedListOfCountries = 'Custom selected countries';
+        }
+
+        if (isRemoteRun.checked) {
+          if (sql_query.trim() !== '' && selected_countries.length > 0) {
+            $.ajax({
+                url: "",
+                method: "POST",
+                data: {
+                  query: sql_query,
+                  selected_countries: selected_countries.join(','), // Convert the array to a comma-separated string
+                  list_of_countries: selectedListOfCountries,
+                  is_remote: "remote_start",
+                  csrfmiddlewaretoken: "{{ csrf_token }}"
+                }
+            });
+            isRemoteRun.checked = false;
+            Swal.fire({
+              position: 'top-end',
+              icon: 'success',
+              title: 'Your request has been sent',
+              showConfirmButton: false,
+              timer: 1500
+            });
+            // change submit button to Start
+            var submitButton = document.getElementById('startButton');
+            submitButton.textContent = 'Start';
+          } else {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Oops...',
+              text: 'Please provide a query and select at least one country.',
+            });
+            isRemoteRun.checked = false;
+            // change submit button to Start
+            var submitButton = document.getElementById('startButton');
+            submitButton.textContent = 'Start';
+          }
+        } else {
+          // Show the loader & stop loader button
+          $("#loader").show();
+          $("#stop-loader").show();
+
+          // deactivate all buttons
+          $("#shareResult, #runRemotely, #saveToDwh").each(function() {
+            $(this).prop("disabled", true);
+          });
+          // deactivate all buttons
+
+          // Check if result was shared: clear address bar and uncheck share option
+          var isShareResultChecked = document.getElementById('shareResult');
+
+          if (isShareResultChecked.checked){
+            isShareResultChecked.checked = false;
+            window.history.replaceState(null, null, '/');
+          }
+
+          // Define a variable to store the identifier
+          var resultIdentifier = null;
+
+          // Store the original URL before making any changes
+          var originalUrl = window.location.href;
+
+          // Add condition to check if there is an select query and a country selected
+          if (sql_query.trim() !== '' && selected_countries.length > 0) {
+            
+            // Send the AJAX request to run the query
+            var selectedListOfCountries = selectPicker.options[selectPicker.selectedIndex].text;
+            if (selectedListOfCountries == 'Select countries list') {
+              selectedListOfCountries = 'Custom selected countries';
+            }
+
+            xhr = $.ajax({
+              url: "",
+              method: "POST",
+              data: {
+                query: sql_query,
+                custom_user_table_name: userTableName,
+                list_of_countries: selectedListOfCountries,
+                selected_countries: selected_countries.join(','), // Convert the array to a comma-separated string
+                csrfmiddlewaretoken: "{{ csrf_token }}"
+              },
+              success: function (data) {
+                var table = $("#result-container");
+                var dataIdentifier = data.identifier;
+
+                // If there is no data, hide the container and return
+                if (!data.table_html || data.length === 0) {
+                  table.hide();
+                  // hide loader and stop loader button
+                  $("#loader").hide();
+                  $("#stop-loader").hide();
+                  return;
+                } else { 
+                  // ======== IF SUCCESS ========
+                  table.show(); // Show the container if it was hidden
+                  
+                  $("#results-table-container").html(data.table_html); // Replace the existing table with the returned HTML
+                  
+                  // change saveToDwhLabel
+                  $("#saveToDwh").prop("checked", false);
+                  var isSaveToDwhAfterExec = document.getElementById('saveToDwhLabel');
+                  isSaveToDwhAfterExec.textContent = 'Save result to dwh';
+
+                  // deactivate all buttons
+                  $("#shareResult, #runRemotely, #saveToDwh").each(function() {
+                    $(this).prop("disabled", false);
+                  });
+                  // deactivate all buttons
+
+                  // Store the identifier in the resultIdentifier variable
+                  if (data.identifier) {
+                    resultIdentifier = data.identifier;
+                  }
+
+                  if (data.table_name) {
+                    $("#table-name").text("Saved as: catopus."+ data.table_name);
+                    $("#table-name-container").show();
+                  } else {
+                    $("#table-name-container").hide();
+                  } 
+
+                  // hide loader and stop loader button
+                  $("#loader").hide();
+                  $("#stop-loader").hide();     
+                                    
+                }
+                // ======== IF SUCCESS ========(END)
+
+                // Add an event listener for the checkbox "Share results"
+                $("#shareResult").on("change ", function() {
+                  var isShareResultChecked = $(this).is(":checked");
+
+                  // Update the URL in the address bar with the identifier
+                  if (resultIdentifier && isShareResultChecked) {
+                    window.history.replaceState(null, null, '/result/' + resultIdentifier + '/');
+                  } else if (!isShareResultChecked) {
+                    // Reset the URL in the address bar if the checkbox is unchecked
+                    window.history.replaceState(null, null, '/');
+                  } else {
+                    // Handle the case when shareResult is unchecked and resultIdentifier is not set
+                    console.log("Checkbox is unchecked and resultIdentifier is not set.");
+                  }
+                }); 
+
+
+                  // Initialize Simple-DataTables on the results table
+                  const dataTable1 = new simpleDatatables.DataTable("#results-table", {
+                    perPage: 100000,
+                    searchable: true,
+                    labels: {
+                        placeholder: "Search...",
+                        noRows: "No entries found",
+                        info: "Showing {start} to {end} of {rows} entries"},
+                    fixedHeight: false,
+                    paging: false,
+                  });
+
+                  // Add an event listener to handle the "All" option in the dropdown
+                  dataTable.on("datatable.perpage", () => {
+                      if (dataTable.config.perPage === "All") {
+                          dataTable.config.perPage = dataTable.data.length;
+                          dataTable.update();
+                      }
+                  });
+                  // Initialize Simple-DataTables on the results table
+              },
+              error: function (jqXHR, textStatus, errorThrown) {
+                // Check if the error occurred due to the user stopping the request
+                if (!userStoppedRequest) {
+                  var errorDetails = "";
+                  if (jqXHR.status && jqXHR.statusText) {
+                    errorDetails += "Status: " + jqXHR.status + " " + jqXHR.statusText + "\n";
+                  }
+                  if (textStatus) {
+                    errorDetails += "Error Type: " + textStatus + "\n";
+                  }
+                  if (errorThrown) {
+                    errorDetails += "Error Thrown: " + errorThrown;
+                  }
+
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'An error occurred. Please stop the process and try again.',
+                    footer: '<pre>' + errorDetails + '</pre>'  // Show error details in the footer
+                  });
+                  $("#loader").hide();
+                  $("#stop-loader").hide();
+                }
+              }
+            });
+          } else {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Oops...',
+              text: 'Please provide a query and select at least one country.',
+            });
+            $("#loader").hide();
+            $("#stop-loader").hide();
+          }
+        }
+      });
+
+    </script>
+
+
+
+  <!-- ======= Main Content ======= -->
+{% endblock %}

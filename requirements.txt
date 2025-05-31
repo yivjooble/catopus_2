@@ -1,0 +1,16 @@
+# python -m Django
+# use django-environ package to manage .env in Django
+psycopg2
+SQLAlchemy<2.0.0
+pandas
+django-environ
+django-crispy-forms
+python-dotenv
+slack_sdk
+django-bootstrap4
+pyarrow
+fastparquet
+celery 
+redis
+whitenoises
+gunicorn

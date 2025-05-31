@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+    Saved scripts
+{% endblock %}
+
+{% block content %}
+
+  <div class="pagetitle">
+    <h1>Saved scripts</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'search:index' %}">Home</a></li>
+        <li class="breadcrumb-item active">Saved sql queries</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+
+
+  <section class="section">
+    <div class="row">
+      <!-- CARDS -->
+      <div class="col-lg">
+  
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Saved scripts</h5>
+            <p class="card-text">Here you can find saved scripts.</p>
+  
+            <!-- df result -->
+            <div class="card" id="result-container">
+              <div class="card-body">
+                <div class="row mt-4">
+                  <div class="table-responsive">
+  
+                    <div id="results-table-container">
+                      <table id="savedScriptsTable" class="table table-hover table-bordered table-sm">
+                        <thead>
+                          <tr>
+                            <th>user_id</th>
+                            <th>sql_query</th>
+                            <th>countries_list</th>
+                            <th>countries</th>
+                            <th>saved_on</th>
+                            <th>updated_on</th>
+                            <th>deleted_on</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for saved in saved_scripts %}
+                          <tr>
+                            <td>{{ saved.user_id }}</td>
+                            <td>{{ saved.sql_query }}</td>
+                            <td>{{ saved.countries_list }}</td>
+                            <td>{{ saved.countries }}</td>
+                            <td>{{ saved.saved_on }}</td>
+                            <td>{{ saved.updated_on }}</td>
+                            <td>{{ saved.deleted_on }}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+  
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- END df result -->
+  
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="myModalLabel">Details</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <!-- Content will be replaced here -->
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Copy sql</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- END of Modal -->
+  
+  
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
+
+  
+  <style>
+    .modal-dialog {
+      max-width: 50%;
+    }
+  
+    #savedScriptsTable tbody tr {
+      user-select: none;
+    }
+  
+    #savedScriptsTable tbody tr:hover {
+      cursor: pointer;
+    }
+  
+    .truncate-text {
+        display: inline-block;
+        max-width: 20rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+  </style>
+  
+  
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var table = $('#savedScriptsTable').DataTable({
+        "pageLength": 10,
+        "columnDefs": [
+          {
+            "targets": [1, 2],
+            "render": function (data, type, row) {
+              if (type === 'display') {
+                var truncatedText = (data.length > 100) ? data.substr(0, 100) + '...' : data;
+                return '<span class="truncate-text" data-original="' + data + '">' + truncatedText + '</span>';
+              }
+              return data;
+            }
+          }
+        ]
+      });
+  
+      // Click event for each row
+      $('#savedScriptsTable tbody').on('dblclick', 'tr', function () {
+        var rowData = table.row(this).data();
+        var modalContent = formatModalContent(rowData);
+        $('#myModal .modal-body').html(modalContent);
+        $('#myModal').modal('show');
+  
+        // Apply syntax highlighting to the SQL query
+        document.querySelectorAll('pre code').forEach((block) => {
+          hljs.highlightBlock(block);
+        });
+      });
+  
+    });
+  
+      function formatModalContent(rowData) {
+        var formattedSql = sqlFormatter.format(rowData[1], {
+          language: 'postgresql', 
+          indent: '  ', 
+          uppercase: true,
+          linesBetweenQueries: 2
+        });
+  
+        var content = '<table class="table table-bordered">';
+        content += '<tr><th>user_id</th><td>' + rowData[0] + '</td></tr>';
+        content += '<tr><th>saved_on</th><td>' + rowData[4] + '</td></tr>';
+        content += '<tr><th>sql_query</th><td><pre><code class="language-sql">' + formattedSql + '</code></pre></td></tr>';
+        content += '<tr><th>countries_list</th><td>' + rowData[2] + '</td></tr>';
+        content += '<tr><th>countries</th><td>' + rowData[3] + '</td></tr>';
+        content += '</table>';
+        return content;
+      }
+  
+  </script>
+
+{% endblock %}

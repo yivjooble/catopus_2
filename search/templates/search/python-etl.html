@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+    Saved scripts
+{% endblock %}
+
+{% block content %}
+
+  <div class="pagetitle">
+    <h1>Python ETL</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'search:index' %}">Home</a></li>
+        <li class="breadcrumb-item active">Python ETL</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+
+
+  <section class="section">
+    <div class="row">
+      <!-- CARDS -->
+      <div class="col-lg">
+  
+        <div class="card">
+          <div class="card-body">
+  
+            <h5 class="card-title">Gitlab projects pull</h5>
+
+            <!-- Default Table -->
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Project name</th>
+                  <th scope="col">Pull button</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">1</th>
+                  <td>Dagster_dwh_etl_DEV</td>
+                  <td><button type="button" class="btn btn-outline-success">pull changes</button></td>
+                </tr>
+                <tr>
+                  <th scope="row">2</th>
+                  <td>Dagster_dwh_etl_PROD</td>
+                  <td><button type="button" class="btn btn-outline-success">pull changes</button></td>
+                </tr>
+                <tr>
+                  <th scope="row">3</th>
+                  <td>DREDD_DEV</td>
+                  <td><button type="button" class="btn btn-outline-success">pull changes</button></td>
+                </tr>
+                <tr>
+                  <th scope="row">4</th>
+                  <td>DREDD_PROD</td>
+                  <td><button type="button" class="btn btn-outline-success">pull changes</button></td>
+                </tr>
+                <tr>
+                  <th scope="row">5</th>
+                  <td>DWH_SCRIPTS</td>
+                  <td><button type="button" class="btn btn-outline-success">pull changes</button></td>
+                </tr>
+              </tbody>
+            </table>
+  
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    
+  </section>
+
+
+  <script>
+      // Function to get CSRF cookie
+      function getCookie(name) {
+          let cookieValue = null;
+          if (document.cookie && document.cookie !== '') {
+              const cookies = document.cookie.split(';');
+              for (let i = 0; i < cookies.length; i++) {
+                  const cookie = cookies[i].trim();
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                      break;
+                  }
+              }
+          }
+          return cookieValue;
+      }
+
+      $(document).ready(function() {
+          $(".btn").click(function() {
+              // Show SwalFire loader
+              Swal.fire({
+                  title: 'Processing...',
+                  html: 'Please wait, pulling changes.',
+                  timerProgressBar: true,
+                  didOpen: () => {
+                      Swal.showLoading()
+                  }
+              });
+
+              var projectName = $(this).closest('tr').find('td:eq(0)').text();
+              
+              $.ajax({
+                  type: "POST",
+                  url: "/run_bat_file/",
+                  headers: { "X-CSRFToken": getCookie("csrftoken") },
+                  data: JSON.stringify({ 'project_name': projectName }),
+                  contentType: "application/json",
+                  success: function(response) {
+                      // Close SwalFire loader
+                      Swal.close();
+
+                      if (response.status === 'success') {
+                          Swal.fire('Success', 'Successfully pulled changes.', 'success');
+                      } else {
+                          Swal.fire('Error', 'Failed to pull changes: ' + response.error, 'error');
+                      }
+                  },
+                  error: function() {
+                      // Close SwalFire loader
+                      Swal.close();
+                      
+                      Swal.fire('Error', 'An error occurred.', 'error');
+                  }
+              });
+          });
+      });
+</script>
+
+  
+  
+
+{% endblock %}
