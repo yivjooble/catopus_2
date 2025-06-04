@@ -35,8 +35,8 @@ class Migration(migrations.Migration):
                 ("is_staff", models.BooleanField(default=False)),
             ],
             options={
-                "db_table": 'dwh_system"."cat_login_creds',
-                "managed": False,
+                "db_table": '"dwh_system"."cat_login_creds"',
+                "managed": True,
             },
         ),
     ]
