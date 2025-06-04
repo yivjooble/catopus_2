@@ -247,8 +247,9 @@
               <!-- <h5 class="card-title">Catopus search engine</h5> -->
     
               <!-- General Form Elements -->
-              <form method="post" id="query-form">
+              <form method="post" id="query-form" class="form-layout">
                 {% csrf_token %}
+                <div class="query-options">
 
 
                 <!-- Extra Large Modal -->
@@ -765,9 +766,11 @@
 
                     </div>
                   </div>
-                  
-                </div>
-                <!-- Loading spinner -->
+
+                  </div>
+                </div><!-- query-options -->
+                <div class="query-input">
+                  <!-- Loading spinner -->
                 <div id="loader" class="text-center" style="display:none;">
                   <div class="d-flex justify-content-center">
                     <div>
@@ -787,8 +790,9 @@
                     </div>
                   </div>
                 </div>
-                <!-- Loading spinner -->
-              </form>
+                  <!-- Loading spinner -->
+                </div><!-- query-input -->
+                </form>
               <!-- End General Form Elements -->
             </div>
 
