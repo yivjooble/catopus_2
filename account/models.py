@@ -24,8 +24,8 @@ class LoginCreds(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []
 
     class Meta:
-        managed = False
-        db_table = 'dwh_system\".\"cat_login_creds'
+        managed = True
+        db_table = '"dwh_system"."cat_login_creds"'
 
     def __str__(self):
         return self.username
